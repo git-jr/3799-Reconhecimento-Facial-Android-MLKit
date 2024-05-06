@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alura.sorria.ui.components.TextCustom
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.FaceDetection
 
 
 @OptIn(ExperimentalGetImage::class)
@@ -30,6 +31,10 @@ fun CameraScreen() {
 
     val context = LocalContext.current.applicationContext
 
+    val faceDetector = remember {
+        FaceDetection.getClient()
+    }
+
     val cameraAnalyzer = remember {
         CameraAnalyzer { imageProxy ->
             val mediaImage = imageProxy.image
@@ -37,6 +42,7 @@ fun CameraScreen() {
                 val image =
                     InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
+                faceDetector.process(image)
             }
         }
     }
