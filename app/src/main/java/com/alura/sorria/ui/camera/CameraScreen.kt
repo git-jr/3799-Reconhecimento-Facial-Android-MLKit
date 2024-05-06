@@ -42,7 +42,16 @@ fun CameraScreen() {
                 val image =
                     InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
-                faceDetector.process(image)
+                faceDetector
+                    .process(image)
+                    .addOnSuccessListener { faces ->
+                        faces.firstOrNull()?.let { face ->
+                            viewModel.setFaceDimensions(face.boundingBox)
+                        }
+                    }
+                    .addOnCompleteListener {
+                        imageProxy.close()
+                    }
             }
         }
     }
