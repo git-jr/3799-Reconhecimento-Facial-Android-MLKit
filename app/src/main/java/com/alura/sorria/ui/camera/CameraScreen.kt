@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.alura.sorria.ui.components.TextCustom
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetectorOptions
 
 
 @OptIn(ExperimentalGetImage::class)
@@ -31,8 +32,14 @@ fun CameraScreen() {
 
     val context = LocalContext.current.applicationContext
 
+    val highAccuracyOpts = FaceDetectorOptions.Builder()
+        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+        .build()
+
     val faceDetector = remember {
-        FaceDetection.getClient()
+        FaceDetection.getClient(highAccuracyOpts)
     }
 
     val cameraAnalyzer = remember {
@@ -47,6 +54,8 @@ fun CameraScreen() {
                     .addOnSuccessListener { faces ->
                         faces.firstOrNull()?.let { face ->
                             viewModel.setFaceDimensions(face.boundingBox)
+                            viewModel.setSmileProb(face.smilingProbability)
+
                         }
                     }
                     .addOnCompleteListener {
@@ -86,6 +95,10 @@ fun CameraScreen() {
             TextCustom(
                 text = "Probabilidade de sorriso: $it",
             )
+
+            if(state.smileProb!! > 0.5){
+                TextCustom( "Está sorrinfo")
+            }
         }
     }
 }
