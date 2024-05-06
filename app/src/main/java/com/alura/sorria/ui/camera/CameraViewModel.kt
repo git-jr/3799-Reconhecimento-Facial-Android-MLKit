@@ -27,6 +27,7 @@ class CameraViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 smileProb = smileProb,
+                isSmiling = smileProb != null && smileProb > 0.5
             )
         }
     }

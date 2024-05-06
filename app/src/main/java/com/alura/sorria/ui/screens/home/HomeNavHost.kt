@@ -117,7 +117,11 @@ fun HomeNavHost(
                 modifier = Modifier
                     .alpha(if (state.showCameraPreview) 1f else 0f)
             ) {
-                AnalyzeScreen()
+                AnalyzeScreen(
+                    onSmiledDetected = {
+                        homeViewModel.pulseBigHeart(true)
+                    }
+                )
             }
         }
     }

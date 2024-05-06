@@ -23,7 +23,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun AnalyzeScreen() {
+fun AnalyzeScreen(
+    onSmiledDetected: () -> Unit
+) {
     Box(
         modifier = Modifier
             .alpha(0.8f)
@@ -36,7 +38,9 @@ fun AnalyzeScreen() {
         var permissionGranted by remember { mutableStateOf(permissionUtils.allCameraPermissionsGranted()) }
 
         if (permissionGranted) {
-            CameraScreen()
+            CameraScreen(
+                onSmiledDetected = onSmiledDetected
+            )
         } else {
             CameraPermissionsScreen(
                 permissionGranted = false,

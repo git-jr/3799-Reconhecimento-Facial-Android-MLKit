@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -26,11 +27,19 @@ import com.google.mlkit.vision.face.FaceDetectorOptions
 
 @OptIn(ExperimentalGetImage::class)
 @Composable
-fun CameraScreen() {
+fun CameraScreen(
+    onSmiledDetected: () -> Unit
+) {
     val viewModel = hiltViewModel<CameraViewModel>()
     val state by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current.applicationContext
+
+    LaunchedEffect(state.isSmiling) {
+        if (state.isSmiling) {
+            onSmiledDetected()
+        }
+    }
 
     val highAccuracyOpts = FaceDetectorOptions.Builder()
         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
@@ -96,8 +105,8 @@ fun CameraScreen() {
                 text = "Probabilidade de sorriso: $it",
             )
 
-            if(state.smileProb!! > 0.5){
-                TextCustom( "Está sorrinfo")
+            if (state.smileProb!! > 0.5) {
+                TextCustom("Está sorrinfo")
             }
         }
     }
