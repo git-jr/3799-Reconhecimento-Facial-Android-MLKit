@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -54,6 +56,9 @@ fun CameraScreen(
         }
     }
 
+    var centralPointUpperLip by remember { mutableFloatStateOf(0f) }
+    var centralPointLowerLip by remember { mutableFloatStateOf(0f) }
+
     val highAccuracyOpts = FaceDetectorOptions.Builder()
         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
         .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
@@ -89,9 +94,17 @@ fun CameraScreen(
                                 rotX = face.headEulerAngleX
                             )
 
-                            face.getContour(FaceContour.UPPER_LIP_TOP)?.let { points ->
-                                viewModel.setMainText("Lista de pontos: $points")
+                            face.getContour(FaceContour.UPPER_LIP_TOP)?.let { points: FaceContour ->
+                                points.let {
+                                    centralPointUpperLip = it.points[it.points.size / 2].y
+                                }
                             }
+
+                            face.getContour(FaceContour.LOWER_LIP_BOTTOM)?.points?.let {
+                                centralPointLowerLip = it[it.size / 2].y
+                            }
+
+                            viewModel.setMainText("Distancia entre os labios: ${centralPointLowerLip - centralPointUpperLip}")
                         }
                     }
                     .addOnCompleteListener {
