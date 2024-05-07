@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alura.sorria.ui.components.TextCustom
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.FaceContour
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.google.mlkit.vision.face.FaceLandmark
@@ -57,6 +58,7 @@ fun CameraScreen(
         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
         .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
         .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+        .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
         .build()
 
     val faceDetector = remember {
@@ -86,6 +88,10 @@ fun CameraScreen(
                                 rotZ = face.headEulerAngleZ,
                                 rotX = face.headEulerAngleX
                             )
+
+                            face.getContour(FaceContour.UPPER_LIP_TOP)?.let { points ->
+                                viewModel.setMainText("Lista de pontos: $points")
+                            }
                         }
                     }
                     .addOnCompleteListener {
