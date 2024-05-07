@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -37,6 +38,8 @@ import com.alura.sorria.ui.screens.profile.ProfileScreen
 import com.alura.sorria.ui.screens.search.SearchScreen
 import com.alura.sorria.ui.screens.video.VideosScreen
 import com.alura.sorria.ui.theme.SorriaTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,6 +100,8 @@ fun HomeNavHost(
                 mutableStateOf(false)
             }
 
+            val scope = rememberCoroutineScope()
+
             NavHost(
                 navController = navController,
                 startDestination = screenItems[0].first,
@@ -136,10 +141,18 @@ fun HomeNavHost(
                         homeViewModel.pulseBigHeart(true)
                     },
                     onSlideToTop = {
-                        slideToTopState = true
+                        scope.launch {
+                            slideToTopState = true
+                            delay(1000)
+                            slideToTopState = false
+                        }
                     },
                     onSlideToBottom = {
-                        slideToBottomState = true
+                        scope.launch {
+                            slideToBottomState = true
+                            delay(1000)
+                            slideToBottomState = false
+                        }
                     }
                 )
             }
