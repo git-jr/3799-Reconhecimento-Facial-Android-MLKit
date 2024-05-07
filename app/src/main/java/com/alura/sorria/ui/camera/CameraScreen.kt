@@ -61,7 +61,7 @@ fun CameraScreen(
     var centralPointUpperLip by remember { mutableFloatStateOf(0f) }
     var centralPointLowerLip by remember { mutableFloatStateOf(0f) }
     var mouthIsOpened by remember{ mutableStateOf(false)}
-    mouthIsOpened = (centralPointLowerLip - centralPointUpperLip) > 75
+    mouthIsOpened = (centralPointLowerLip - centralPointUpperLip) > 75 && !state.isSmiling
 
     LaunchedEffect(mouthIsOpened) {
         if(mouthIsOpened){
@@ -113,8 +113,6 @@ fun CameraScreen(
                             face.getContour(FaceContour.LOWER_LIP_BOTTOM)?.points?.let {
                                 centralPointLowerLip = it[it.size / 2].y
                             }
-
-                            viewModel.setMainText("Distancia entre os labios: ${centralPointLowerLip - centralPointUpperLip}")
                         }
                     }
                     .addOnCompleteListener {
