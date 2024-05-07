@@ -153,6 +153,9 @@ fun HomeNavHost(
                             delay(1000)
                             slideToBottomState = false
                         }
+                    },
+                    onMouthIsOpened ={
+                        homeViewModel.startListening()
                     }
                 )
             }

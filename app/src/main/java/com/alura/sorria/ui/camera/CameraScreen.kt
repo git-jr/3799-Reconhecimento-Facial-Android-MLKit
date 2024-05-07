@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,7 +35,8 @@ import com.google.mlkit.vision.face.FaceLandmark
 fun CameraScreen(
     onSmiledDetected: () -> Unit,
     onSlideToTop: () -> Unit,
-    onSlideToBottom: () -> Unit
+    onSlideToBottom: () -> Unit,
+    onMouthIsOpened: () -> Unit
 ) {
     val viewModel = hiltViewModel<CameraViewModel>()
     val state by viewModel.uiState.collectAsState()
@@ -58,6 +60,14 @@ fun CameraScreen(
 
     var centralPointUpperLip by remember { mutableFloatStateOf(0f) }
     var centralPointLowerLip by remember { mutableFloatStateOf(0f) }
+    var mouthIsOpened by remember{ mutableStateOf(false)}
+    mouthIsOpened = (centralPointLowerLip - centralPointUpperLip) > 75
+
+    LaunchedEffect(mouthIsOpened) {
+        if(mouthIsOpened){
+            onMouthIsOpened()
+        }
+    }
 
     val highAccuracyOpts = FaceDetectorOptions.Builder()
         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)

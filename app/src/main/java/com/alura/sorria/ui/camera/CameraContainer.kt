@@ -26,7 +26,8 @@ import kotlinx.coroutines.launch
 fun AnalyzeScreen(
     onSmiledDetected: () -> Unit,
     onSlideToTop: () -> Unit,
-    onSlideToBottom: () -> Unit
+    onSlideToBottom: () -> Unit,
+    onMouthIsOpened: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -43,7 +44,8 @@ fun AnalyzeScreen(
             CameraScreen(
                 onSmiledDetected = onSmiledDetected,
                 onSlideToTop = onSlideToTop,
-                onSlideToBottom = onSlideToBottom
+                onSlideToBottom = onSlideToBottom,
+                onMouthIsOpened = onMouthIsOpened
             )
         } else {
             CameraPermissionsScreen(
