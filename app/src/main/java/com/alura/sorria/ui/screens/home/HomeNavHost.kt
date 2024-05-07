@@ -120,6 +120,12 @@ fun HomeNavHost(
                 AnalyzeScreen(
                     onSmiledDetected = {
                         homeViewModel.pulseBigHeart(true)
+                    },
+                    onSlideToTop = {
+
+                    },
+                    onSlideToBottom = {
+
                     }
                 )
             }

@@ -23,12 +23,15 @@ import com.alura.sorria.ui.components.TextCustom
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
+import com.google.mlkit.vision.face.FaceLandmark
 
 
 @OptIn(ExperimentalGetImage::class)
 @Composable
 fun CameraScreen(
-    onSmiledDetected: () -> Unit
+    onSmiledDetected: () -> Unit,
+    onSlideToTop: () -> Unit,
+    onSlideToBottom: () -> Unit
 ) {
     val viewModel = hiltViewModel<CameraViewModel>()
     val state by viewModel.uiState.collectAsState()
@@ -38,6 +41,15 @@ fun CameraScreen(
     LaunchedEffect(state.isSmiling) {
         if (state.isSmiling) {
             onSmiledDetected()
+        }
+    }
+
+    LaunchedEffect(state.rotZ) {
+        if (state.rotZ > 10) {
+            onSlideToTop()
+        }
+        if (state.rotZ < -10) {
+            onSlideToBottom()
         }
     }
 
@@ -65,6 +77,15 @@ fun CameraScreen(
                             viewModel.setFaceDimensions(face.boundingBox)
                             viewModel.setSmileProb(face.smilingProbability)
 
+                            viewModel.setMainReferencePoints(
+                                rightEye = face.getLandmark(FaceLandmark.RIGHT_EYE)?.position,
+                                leftEye = face.getLandmark(FaceLandmark.LEFT_EYE)?.position,
+                                nose = face.getLandmark(FaceLandmark.NOSE_BASE)?.position,
+                                mouth = face.getLandmark(FaceLandmark.MOUTH_BOTTOM)?.position,
+                                rotY = face.headEulerAngleY,
+                                rotZ = face.headEulerAngleZ,
+                                rotX = face.headEulerAngleX
+                            )
                         }
                     }
                     .addOnCompleteListener {
@@ -95,20 +116,7 @@ fun CameraScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        state.faceDimensions?.let { faceDimensions ->
-            TextCustom(
-                text = "Dimensões rosto: $faceDimensions",
-            )
-        }
-        state.smileProb?.let {
-            TextCustom(
-                text = "Probabilidade de sorriso: $it",
-            )
-
-            if (state.smileProb!! > 0.5) {
-                TextCustom("Está sorrinfo")
-            }
-        }
+        TestScreen(state = state)
     }
 }
 
