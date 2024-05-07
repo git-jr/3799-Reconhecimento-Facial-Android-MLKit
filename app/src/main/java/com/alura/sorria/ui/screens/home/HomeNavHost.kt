@@ -14,6 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -85,6 +88,15 @@ fun HomeNavHost(
             modifier = Modifier
                 .padding(paddingValues)
         ) {
+
+            var slideToTopState by remember {
+                mutableStateOf(false)
+            }
+
+            var slideToBottomState by remember {
+                mutableStateOf(false)
+            }
+
             NavHost(
                 navController = navController,
                 startDestination = screenItems[0].first,
@@ -97,6 +109,8 @@ fun HomeNavHost(
                         posts = state.posts,
                         pulseBigHeart = state.pulseBigHeart,
                         onPulseBigHeart = { homeViewModel.pulseBigHeart(it) },
+                        slideToTopState = slideToTopState,
+                        slideToBottomState = slideToBottomState,
                     )
                 }
 
@@ -122,10 +136,10 @@ fun HomeNavHost(
                         homeViewModel.pulseBigHeart(true)
                     },
                     onSlideToTop = {
-
+                        slideToTopState = true
                     },
                     onSlideToBottom = {
-
+                        slideToBottomState = true
                     }
                 )
             }

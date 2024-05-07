@@ -71,10 +71,23 @@ fun ListPosts(
     posts: List<Post>,
     pulseBigHeart: Boolean = false,
     onPulseBigHeart: (Boolean) -> Unit = {},
+    slideToTopState: Boolean = false,
+    slideToBottomState: Boolean = false
 ) {
     val state = rememberLazyListState()
     val index by remember { derivedStateOf { state.firstVisibleItemIndex } }
 
+    LaunchedEffect(slideToTopState) {
+        if (slideToTopState && index > 0) {
+            state.animateScrollToItem(index - 1)
+        }
+    }
+
+    LaunchedEffect(slideToBottomState) {
+        if (slideToBottomState && index < posts.size) {
+            state.animateScrollToItem(index + 1)
+        }
+    }
 
     LazyColumn(
         state = state,
